@@ -10,7 +10,8 @@ const movieSchema = new mongoose.Schema({
   Title: String,
   Year: String,
   imdbID: String,
-  Poster: String
+  Poster: String,
+  userId: String   // 👈 ADD THIS
 });
 
 const Movie = mongoose.model("Movie", movieSchema);
@@ -64,12 +65,12 @@ app.get("/movie/:id", async (req, res) => {
 
 app.post("/addFavorite", async (req, res) => {
   try {
-    const movie = req.body;
+    const { movie, userId } = req.body;
 
-    const exists = await Movie.findOne({ imdbID: movie.imdbID });
+    const exists = await Movie.findOne({ imdbID: movie.imdbID, userId });
 
     if (!exists) {
-      await Movie.create(movie);
+      await Movie.create({ ...movie, userId });
     }
 
     res.json({ message: "Added to DB" });
@@ -81,7 +82,8 @@ app.post("/addFavorite", async (req, res) => {
 });
 app.get("/favorites", async (req, res) => {
   try {
-    const movies = await Movie.find();
+   const userId = req.query.userId;
+const movies = await Movie.find({ userId });
     res.json(movies);
   } catch (err) {
     console.log(err);
