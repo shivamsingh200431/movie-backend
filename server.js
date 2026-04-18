@@ -1,6 +1,8 @@
+require("dotenv").config();
+
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb+srv://trial3104656_db_user:trial7586@movie2.1kf75wy.mongodb.net/moviesDB?appName=movie2")
+mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
 
