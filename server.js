@@ -75,17 +75,23 @@ app.post("/addFavorite", async (req, res) => {
 
     const exists = await Movie.findOne({ imdbID: movie.imdbID, userId });
 
-    if (!exists) {
-      await Movie.create({ ...movie, userId });
+    if (exists) {
+      return res.json({ message: "Already added to favorites" });
     }
 
-    res.json({ message: "Added to DB" });
+    await Movie.create({ ...movie, userId });
+
+    res.json({ message: "Added to favorites" });
 
   } catch (err) {
     console.log(err);
     res.status(500).send("Error saving movie");
   }
 });
+ 
+// Get user's favorite movies
+
+
 app.get("/favorites", async (req, res) => {
   try {
    const userId = req.query.userId;
@@ -144,7 +150,13 @@ app.post("/login", async (req, res) => {
     return res.json({ message: "Invalid credentials" });
   }
 
-  res.json({ message: "Login successful", user });
+ res.json({
+  message: "Login successful",
+  user: {
+    _id: user._id,
+    username: user.username
+  }
+});
 });
 
 // all routes here
