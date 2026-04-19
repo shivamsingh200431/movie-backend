@@ -64,8 +64,14 @@ app.get("/movie/:id", async (req, res) => {
        // Add a movie to favorites
 
 app.post("/addFavorite", async (req, res) => {
+  console.log(req.body);
+
   try {
     const { movie, userId } = req.body;
+
+    if (!movie || !userId) {
+      return res.status(400).send("Missing data");
+    }
 
     const exists = await Movie.findOne({ imdbID: movie.imdbID, userId });
 
